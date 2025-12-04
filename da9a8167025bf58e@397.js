@@ -53,7 +53,9 @@ function* _4(d3,size,styles,graticule,countries,zones,color,path,projection)
     .enter()
     .append("path")
     .attr("class", "zone")
-    .attr("fill", (d) => color(d.properties.minutes_offset))
+    .attr("fill", (d) => color(d.properties.minutes_offset));
+
+  zonesPath
     .attr("d", path)
     .append("title")
     .text((d) => `${d.properties.utc_offset}`);
