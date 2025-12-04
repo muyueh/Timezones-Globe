@@ -30,6 +30,8 @@ function* _4(d3,size,styles,graticule,countries,zones,color,path)
 
   svg.append("style").html(styles);
 
+  const projection = path.projection();
+
   const sphere = svg
     .append("path")
     .datum({ type: "Sphere" })
@@ -64,6 +66,30 @@ function* _4(d3,size,styles,graticule,countries,zones,color,path)
     countriesPath.attr("d", path);
     zonesPath.attr("d", path);
   }
+
+  const drag = d3
+    .drag()
+    .on("start", (event) => {
+      event.subject = {
+        x: event.x,
+        y: event.y,
+        rotate: projection.rotate()
+      };
+    })
+    .on("drag", (event) => {
+      const { x, y, rotate } = event.subject;
+      const [lambda, phi, gamma = 0] = rotate;
+
+      projection.rotate([
+        lambda + (event.x - x) * 0.5,
+        phi - (event.y - y) * 0.5,
+        gamma
+      ]);
+
+      render();
+    });
+
+  svg.call(drag);
 
   yield svg.node();
   render();
