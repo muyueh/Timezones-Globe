@@ -4,23 +4,15 @@ function _1(md){return(
 md`# Timezones Globe`
 )}
 
-function _longitude(Inputs){return(
-Inputs.range([-180, 180], {
-  value: 5,
-  label: "Longitude",
-  step: 1
-})
+function _longitude(){return(
+5
 )}
 
-function _latitude(Inputs){return(
-Inputs.range([-90, 90], {
-  value: 46,
-  label: "Latitude",
-  step: 1
-})
+function _latitude(){return(
+46
 )}
 
-function* _4(d3,size,styles,graticule,countries,zones,color,path)
+function* _4(d3,size,styles,graticule,countries,zones,color,path,projection)
 {
   const svg = d3
     .create("svg")
@@ -64,6 +56,36 @@ function* _4(d3,size,styles,graticule,countries,zones,color,path)
     countriesPath.attr("d", path);
     zonesPath.attr("d", path);
   }
+
+  const dragSensitivity = 0.4;
+  let previousPoint = null;
+
+  svg.call(
+    d3
+      .drag()
+      .on("start", (event) => {
+        previousPoint = d3.pointer(event, svg.node());
+      })
+      .on("drag", (event) => {
+        if (!previousPoint) return;
+        const [x, y] = d3.pointer(event, svg.node());
+        const dx = x - previousPoint[0];
+        const dy = y - previousPoint[1];
+
+        const [lambda, phi, gamma] = projection.rotate();
+        projection.rotate([
+          lambda + dx * dragSensitivity,
+          Math.max(-90, Math.min(90, phi - dy * dragSensitivity)),
+          gamma
+        ]);
+
+        previousPoint = [x, y];
+        render();
+      })
+      .on("end", () => {
+        previousPoint = null;
+      })
+  );
 
   yield svg.node();
   render();
