@@ -198,7 +198,7 @@ function _styles(){return(
   stroke-opacity: 0.15;
 }
 .zone {
-  fill-opacity: 0.7
+  fill-opacity: 0.85
 }
 `
 )}
@@ -209,7 +209,7 @@ We would like to reproduce the color scale of [Time Zone Map](https://www.timean
 )}
 
 function _base_colors(){return(
-["#fb8d59", "#fde090", "#a8d696", "#7dbdd1", "#ab8ac1", "#ed6362"]
+["#ff4d4d", "#ffb000", "#7dff4d", "#00d4ff", "#7b61ff", "#ff4fd8"]
 )}
 
 function _color_interpolator(d3,base_colors){return(
